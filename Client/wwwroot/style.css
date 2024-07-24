@@ -35,6 +35,7 @@ nav a, main a {
     text-align: center;
 }
 
+
     nav a:hover, main a:hover {
         background-color: #d7e626;
         color: black;
@@ -75,6 +76,43 @@ th, td {
     margin-bottom: 50px;
 }
 
+    #events tr:hover {
+        background-color: #e1e6a6;
+        cursor:pointer;
+    }
+
+
+
+#regularLink {
+    color: black;
+    background-color:inherit;
+    padding:inherit;
+}
+
+    #regularLink:hover {
+        background-color: inherit;
+        color: inherit;
+        text-decoration: underline;
+    }
+
+.weather {
+    display:flex;
+    flex-direction:row;
+    justify-content:left;
+    align-items:center;
+    gap: 5px;
+}
+
+.weatherIcon {
+    height:50px;
+}
+
+#weatherInTheModal {
+    margin-top:30px;
+    font-size:20px;
+    justify-content: center;
+}
+
 
 .modal {
     display: none;
@@ -92,12 +130,12 @@ th, td {
 
 .modal-content {
     background-color: #fefefe;
-    margin: 5% auto;
+    margin: 2% auto;
     padding: 20px;
     text-align:center;
     border: 1px solid #888;
     width: 630px;
-    height: 630px;
+    height: 550px;
 }
 
 .close {
@@ -132,6 +170,7 @@ th, td {
     border-radius: 5px;
     padding: 10px;
     width: 200px;
+    font-size: 17px;
     text-align: center;
     cursor: pointer;
 }
@@ -166,7 +205,6 @@ th, td {
 }
 
 
-
 #eventUsers {
     width: 90%;
     margin: auto;
@@ -194,4 +232,18 @@ input{
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+}
+
+
+.conditionsWeather {
+    text-align: left;
+}
+
+    .conditionsWeather p {
+        font-size: 18px;
+        margin:20px;
+    }
+
+.titleOfCondition {
+    font-size: 20px;
 }

@@ -12,6 +12,17 @@ async function getParticipants(id) {
     }
 }
 
+async function getWeather(id) {
+    let url = `http://localhost:5201/event/${id}/weather`;
+    try {
+        let response = await fetch(url);
+        let data = await response.json();
+        return data;
+    } catch (error) {
+        return 0;
+    }
+}
+
 async function showAllEvents() {
     let url = `http://localhost:5201/event`;
 
@@ -28,19 +39,27 @@ async function showAllEvents() {
             "<th>Number Of Participants</th>" +
             "<th>Max Registration</th>" +
             "<th>Location</th>" +
+            "<th>Weather</th>" +
             "</tr>";
 
         for (let i = 0; i < data.length; i++) {
             let participantsCount = await getParticipants(data[i].id);
+            let weather = await getWeather(data[i].id);
             str +=
-                `<tr onclick="openModal(${data[i].id})">
-                    <td>${data[i].id}</td>
-                    <td>${data[i].name}</td>
-                    <td>${data[i].startDate}</td>
-                    <td>${data[i].endDate}</td>
-                    <td>${participantsCount}</td>
-                    <td>${data[i].maxRegistrations}</td>
-                    <td>${data[i].location}</td>
+                `<tr>
+                    <td onclick="openModal(${data[i].id})">${data[i].id}</td>
+                    <td onclick="openModal(${data[i].id})">${data[i].name}</td>
+                    <td onclick="openModal(${data[i].id})">${data[i].startDate}</td>
+                    <td onclick="openModal(${data[i].id})">${data[i].endDate}</td>
+                    <td onclick="openModal(${data[i].id})">${participantsCount}</td>
+                    <td onclick="openModal(${data[i].id})">${data[i].maxRegistrations}</td>
+                    <td><a id="regularLink" href="https://www.google.com/maps/search/?api=1&query=${data[i].location}">${data[i].location}</a></td>
+                    <td onclick="openWeatherModal(${data[i].id})">
+                        <div class="weather">
+                            <img class="weatherIcon" src=${weather.current.condition.icon} alt="${weather.current.condition.text} icon">
+                            <p>${weather.current.condition.text}</p>
+                        </div>
+                    </td>
                 </tr>`;
         }
         str += "</table>";
@@ -215,6 +234,56 @@ function closeModal() {
     modal.style.display = "none";
 }
 
+
+
+
+function openWeatherModal(id) {
+    const weatherModal = document.getElementById("weatherModal");
+    const modalWeatherContent = document.getElementById("modalWeatherDetails");
+    const weatherModalTitle = document.getElementById("weatherModalTitle");
+    modalWeatherContent.innerHTML = "";
+
+    let eventUrl = `http://localhost:5201/event/${id}/weather`;
+
+    fetch(eventUrl)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Error fetching event data: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then((weatherData) => {
+            console.log(weatherData);
+            weatherModalTitle.innerText = "Weather in " + weatherData.location.name;
+            let html = `<div class="weather" id="weatherInTheModal">
+                            <img class= "weatherIcon" src= ${weatherData.current.condition.icon} alt = "${weatherData.current.condition.text} icon" />
+                            <p><b>${weatherData.current.condition.text}</b></p>
+                        </div>
+                        <div class="conditionsWeather">
+                            <p> <b class="titleOfCondition"> Temperature :</b> ${weatherData.current.temp_c}°C</p>
+                            <p> <b class="titleOfCondition"> Feels Like :</b> ${weatherData.current.feelslike_c}°C</p>
+                            <p> <b class="titleOfCondition"> Visibility :</b> ${weatherData.current.vis_km} km</p>
+                            <p> <b class="titleOfCondition"> Humidity :</b> ${weatherData.current.humidity}%</p>
+                            <p> <b class="titleOfCondition"> Precipitations :</b> ${weatherData.current.precip_mm} mm</p>
+                            <p> <b class="titleOfCondition"> UV Index :</b> ${weatherData.current.uv}</p>
+                            <p> <b class="titleOfCondition"> Wind Speed :</b> ${weatherData.current.wind_kph} km/h</p>
+                        </div>
+                        `;
+            modalWeatherContent.innerHTML = html;
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+    weatherModal.style.display = "block";
+}
+
+
+function closeWeatherModal() {
+    const modal = document.getElementById("weatherModal");
+    modal.style.display = "none";
+}
+
+
 window.onclick = function (event) {
     const modal = document.getElementById("eventModal");
     if (event.target == modal) {
@@ -225,10 +294,9 @@ window.onclick = function (event) {
     if (event.target == modal2) {
         modal2.style.display = "none";
     }
+
+    const modal3 = document.getElementById('weatherModal');
+    if (event.target == modal3) {
+        modal3.style.display = "none";
+    }
 }
-
-
-
-
-
-
