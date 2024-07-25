@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Server.DTO;
 using System.Collections.Generic;
 using System.Net;
@@ -43,11 +45,19 @@ namespace Server.Controllers
         // GET /event
         [HttpGet("event")]
         public dynamic GetAllEvents(){
-                List<Event> e = db.Events.ToList();
-                if (e.Count == 0){
+            var events = db.Events.Select(x => new{
+                Id = x.Id,
+                Name = x.Name,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                MaxRegistrations = x.MaxRegistrations,
+                Location = x.Location
+            }).ToList();
+
+            if (events.Count == 0){
                     return NotFound("There are no event users with this ID :(");
                 }
-                return Ok(e);
+                return Ok(events);
         }
 
         
@@ -55,17 +65,19 @@ namespace Server.Controllers
         [HttpGet("event/{id}/registration")]
         public dynamic GetEventUsers(string id){
             int intId = int.Parse(id);
-            
-            var eu = db.EventUsers.Where(x => x.EventRef == intId).Select(x => new{
-                x.EventRef,
-                x.UserRef,
-                x.Creation
+
+            var eve = db.Events.Include(e => e.EventUsers).ThenInclude(x => x.UserRefNavigation).FirstOrDefault(x => x.Id == intId);
+
+            var user = eve.EventUsers.Select(x => new{
+                Id = x.UserRefNavigation.Id,
+                Name = x.UserRefNavigation.Name,
+                DateOfBirth = x.UserRefNavigation.DateOfBirth
             }).ToList();
-            
-            if (eu.Count == 0){
+
+            if (user.Count == 0){
                 return NotFound("There are no event users with this ID :(");
             }
-            return Ok(eu);
+            return Ok(user);
         }
 
 
@@ -74,16 +86,14 @@ namespace Server.Controllers
         public dynamic RegisterUserToEvent(string id, [FromBody] AddUserToEventDTO UserToEvent){
             int intId = int.Parse(id);
             DateTime DateOfBirth = DateTime.Parse(UserToEvent.DateOfBirth);
-
+            
             List<EventUser> eventUser = db.EventUsers.Where(eu => eu.EventRef == intId).ToList();
-            bool userExists = false;
             foreach (var i in eventUser){
                 User userRegistered = db.Users.Where(u => i.UserRef == u.Id).First();
-                if (userRegistered != null && userRegistered.Name == UserToEvent.Name && userRegistered.DateOfBirth == DateOfBirth)
-                        userExists = true;
+                if (userRegistered != null && userRegistered.Name == UserToEvent.Name && userRegistered.DateOfBirth == DateOfBirth) {
+                    return BadRequest("User already registered to this event :|"); //code 400
+                }
             }
-            if (userExists)
-                return BadRequest("User already registered to this event :|"); //code 400
 
             int MaxRegistrations = db.Events.Where(e => e.Id == intId).First().MaxRegistrations; 
             int currentRegistered = db.EventUsers.Count(eu => eu.EventRef == intId);
@@ -126,6 +136,13 @@ namespace Server.Controllers
 
             db.EventUsers.Remove(eu);
             db.SaveChanges();
+
+            User toDelete = db.Users.Where(x => x.Id == intUserId).Single();
+            if (toDelete == null) return NotFound("Failed to delete :(");
+
+            db.Users.Remove(toDelete);
+            db.SaveChanges();
+
             return Ok("User Removed from the event Successfuly :)");
         }
 
@@ -209,7 +226,12 @@ namespace Server.Controllers
             User u = db.Users.Where(x => x.Id == intId).First();
             if (u == null)
                 return NotFound("There is no event with this ID :(");
-            return Ok(u);
+            var user = new{
+                Id = u.Id,
+                Name = u.Name,
+                DateOfBirth = u.DateOfBirth
+            };
+            return Ok(user);
         }
 
 
@@ -263,6 +285,30 @@ namespace Server.Controllers
 
             return Content(json, "application/json");
 
+        }
+
+
+        // GET /event/{id}/clothing
+        [HttpGet("event/{id}/clothing")]
+        public dynamic GetClothing(string id){
+            int intId = int.Parse(id);
+
+            Event e = db.Events.FirstOrDefault(x => x.Id == intId);
+            if (e == null){
+                return NotFound("Event not found");
+            }
+
+            string location = e.Location;
+            string json;
+                using (WebClient client = new WebClient()){
+                    json = client.DownloadString($"http://api.weatherapi.com/v1/current.json?key=ef8f798b9c664655a7c133632242107&q={location}");
+                }
+
+            JObject weatherJson = JObject.Parse(json);
+
+            string conditionText = weatherJson["current"]["condition"]["text"].ToString();
+            string temperature = weatherJson["current"]["temp_c"].ToString();
+            return Content(conditionText + temperature, "text/plain");
         }
 
     }
