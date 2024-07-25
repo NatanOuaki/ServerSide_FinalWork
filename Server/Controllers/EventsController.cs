@@ -288,28 +288,104 @@ namespace Server.Controllers
         }
 
 
-        // GET /event/{id}/clothing
-        [HttpGet("event/{id}/clothing")]
-        public dynamic GetClothing(string id){
-            int intId = int.Parse(id);
+       private string OutfitSuggestion(string text, string temperature)
+       {
+           bool res = double.TryParse(temperature, out double temp);
+           if (!res) { return "Failed parsing argument"; }
 
-            Event e = db.Events.FirstOrDefault(x => x.Id == intId);
-            if (e == null){
-                return NotFound("Event not found");
-            }
+           string outfit = "";
+           string link = "";
 
-            string location = e.Location;
-            string json;
-                using (WebClient client = new WebClient()){
-                    json = client.DownloadString($"http://api.weatherapi.com/v1/current.json?key=ef8f798b9c664655a7c133632242107&q={location}");
-                }
+           if (temp < 0)
+           {
+               outfit = "a heavy coat, gloves, scarf, and a hat";
+               link = "https://thenorthface.co.il/";
+           }
+           else if (temp >= 0 && temp < 10)
+           {
+               outfit = "a warm coat and a sweater";
+               link = "https://www.columbia.co.il/";
+           }
+           else if (temp >= 10 && temp < 20)
+           {
+               outfit = "a light jacket or sweater";
+               link = "https://www.terminalx.com/";
+           }
+           else if (temp >= 20 && temp < 30)
+           {
+               outfit = "something light and comfortable";
+               link = "https://fashionclub.co.il/";
+           }
+           else
+           {
+               outfit = "shorts and a t-shirt";
+               link = "https://www.bershka.com/il/";
+           }
 
-            JObject weatherJson = JObject.Parse(json);
+           string lowerText = text.ToLower();
 
-            string conditionText = weatherJson["current"]["condition"]["text"].ToString();
-            string temperature = weatherJson["current"]["temp_c"].ToString();
-            return Content(conditionText + temperature, "text/plain");
-        }
+           if (lowerText.Contains("clear") || lowerText.Contains("sunny"))
+           {
+               outfit += ", and wear sunglasses and a hat";
+               link = "https://www.sunglasses.co.il/";
+           }
+           else if (lowerText.Contains("cloudy") || lowerText.Contains("overcast"))
+           {
+               outfit += ", and you might want to carry a light jacket";
+               link = "https://www.terminalx.com/";
+           }
+           else if (lowerText.Contains("rain") || lowerText.Contains("drizzle"))
+           {
+               outfit += ", and don't forget an umbrella or a raincoat";
+               link = "https://www.rainwear.co.il/";
+           }
+           else if (lowerText.Contains("snow") || lowerText.Contains("sleet") || lowerText.Contains("ice") || lowerText.Contains("blizzard"))
+           {
+               outfit += ", and wear snow boots and a warm hat";
+               link = "https://www.snowwear.co.il/";
+           }
+           else if (lowerText.Contains("thunder"))
+           {
+               outfit += ", and ensure you have waterproof gear and stay safe indoors";
+               link = "https://www.rainwear.co.il/";
+           }
+           else if (lowerText.Contains("fog") || lowerText.Contains("mist"))
+           {
+               outfit += ", and wear something reflective if you're going outside";
+               link = "https://www.safetywear.co.il/";
+           }
+           else if (lowerText.Contains("hail") || lowerText.Contains("ice pellets"))
+           {
+               outfit += ", and wear a sturdy hat and boots";
+               link = "https://www.snowwear.co.il/";
+           }
+
+           return $"It's {text}, the temperature is {temp}°C. Wear {outfit}. Here is a link to buy some: {link}";
+       }
+
+
+       // GET /event/{id}/clothing
+       [HttpGet("event/{id}/clothing")]
+       public dynamic GetClothing(string id){
+           int intId = int.Parse(id);
+
+           Event e = db.Events.FirstOrDefault(x => x.Id == intId);
+           if (e == null){
+               return NotFound("Event not found");
+           }
+
+           string location = e.Location;
+           string json;
+               using (WebClient client = new WebClient()){
+                   json = client.DownloadString($"http://api.weatherapi.com/v1/current.json?key=ef8f798b9c664655a7c133632242107&q={location}");
+               }
+
+           JObject weatherJson = JObject.Parse(json);
+
+           string conditionText = weatherJson["current"]["condition"]["text"].ToString();
+           string temperature = weatherJson["current"]["temp_c"].ToString();
+           return Content(OutfitSuggestion(conditionText ,temperature), "text/plain");
+       }
 
     }
 }
