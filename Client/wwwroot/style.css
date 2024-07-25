@@ -138,6 +138,10 @@ th, td {
     height: 550px;
 }
 
+.modalAddToEvent {
+    height: 600px;
+}
+
 .close {
     color: #aaa;
     float: right;

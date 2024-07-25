@@ -45,12 +45,26 @@ async function showAllEvents() {
         for (let i = 0; i < data.length; i++) {
             let participantsCount = await getParticipants(data[i].id);
             let weather = await getWeather(data[i].id);
+            const startDate = new Date(data[i].startDate);
+            const formattedStartDate = startDate.toLocaleString('en-GB', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit',
+                hour12: false
+            }).replace(',', '');
+
+            const endDate = new Date(data[i].endDate);
+            const formattedEndDate = endDate.toLocaleString('en-GB', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit',
+                hour12: false
+            }).replace(',', '');
+
             str +=
                 `<tr>
                     <td onclick="openModal(${data[i].id})">${data[i].id}</td>
                     <td onclick="openModal(${data[i].id})">${data[i].name}</td>
-                    <td onclick="openModal(${data[i].id})">${data[i].startDate}</td>
-                    <td onclick="openModal(${data[i].id})">${data[i].endDate}</td>
+                    <td onclick="openModal(${data[i].id})">${formattedStartDate}</td>
+                    <td onclick="openModal(${data[i].id})">${formattedEndDate}</td>
                     <td onclick="openModal(${data[i].id})">${participantsCount}</td>
                     <td onclick="openModal(${data[i].id})">${data[i].maxRegistrations}</td>
                     <td><a id="regularLink" href="https://www.google.com/maps/search/?api=1&query=${data[i].location}">${data[i].location}</a></td>
@@ -165,11 +179,16 @@ function openModal(id) {
             "</tr>";
 
             usersData.forEach((user) => {
+                const dateOfBirth = new Date(user.dateOfBirth);
+                const formattedDateOfBirth = dateOfBirth.toLocaleString('en-GB', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                }).replace(',', '');
+
                 tableHTML +=
                     `<tr>
                         <td>${user.id}</td>
                         <td>${user.name}</td>
-                        <td>${user.dateOfBirth}</td>
+                        <td>${formattedDateOfBirth}</td>
                         <td><button id="removeUserButton" onclick="deleteFromEvent(${id}, ${user.id})">Remove User</button></td>
                     </tr>`;
             });
@@ -217,6 +236,7 @@ function deleteEvent() {
     })
         .then(response => {
             if (response.ok) {
+                alert('Event successfully removed :)');
                 closeModal();
                 showAllEvents();  
             } else {

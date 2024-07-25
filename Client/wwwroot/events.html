@@ -35,7 +35,7 @@
 
 
         <aside id="addEventModal" class="modal" style="display:none;">
-            <div class="modal-content">
+            <div class="modal-content modalAddToEvent">
                 <span class="close" onclick="closeSecondModal()">&times;</span>
                 <h2>Add New Event</h2>
 
@@ -43,11 +43,11 @@
                     <label for="title">Title:</label>
                     <input type="text" id="title" name="title" required><br><br>
 
-                    <label for="startDate">Start Date:</label>
-                    <input type="datetime-local" id="startDate" name="startDate" required><br><br>
+                    <label for="startDate">Start Date: <i>(yyyy-mm-dd hh:mm)</i></label>
+                    <input type="text" id="startDate" name="startDate" required><br><br>
 
-                    <label for="endDate">End Date:</label>
-                    <input type="datetime-local" id="endDate" name="endDate" required><br><br>
+                    <label for="endDate">End Date: <i>(yyyy-mm-dd hh:mm)</i></label>
+                    <input type="text" id="endDate" name="endDate" required><br><br>
 
                     <label for="maxRegistrations">Max Registrations:</label>
                     <input type="number" id="maxRegistrations" name="maxRegistrations" required><br><br>

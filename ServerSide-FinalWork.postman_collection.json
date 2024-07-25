@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"title\": \"Champions League 2025 Final \",\r\n  \"startDate\": \"2025-06-15T21:00:00.669Z\",\r\n  \"endDate\": \"2024-06-15T23:15:00.669Z\",\r\n  \"maxRegistrations\": 100000,\r\n  \"location\": \"Istanbul\" \r\n}",
+					"raw": "{\r\n  \"title\": \"Champions League 2025 Final\",\r\n  \"startDate\": \"2025-06-15 21:00\",\r\n  \"endDate\": \"2024-06-15 23:15\",\r\n  \"maxRegistrations\": 100000,\r\n  \"location\": \"Istanbul\" \r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -59,7 +59,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5201/event/1/registration",
+					"raw": "http://localhost:5201/event/2/registration",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -67,8 +67,15 @@
 					"port": "5201",
 					"path": [
 						"event",
-						"1",
+						"2",
 						"registration"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
 					]
 				}
 			},
@@ -81,7 +88,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"David Dery\",\r\n  \"dateOfBirth\": \"2001-04-18T16:16:24.654Z\" \r\n}",
+					"raw": "{\r\n  \"id\":\"0\",\r\n  \"name\": \"David Dery\",\r\n  \"dateOfBirth\": \"2001-02-19 16:16\" \r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -89,7 +96,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5201/event/2/registration",
+					"raw": "http://localhost:5201/event/9/registration",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -97,7 +104,7 @@
 					"port": "5201",
 					"path": [
 						"event",
-						"2",
+						"9",
 						"registration"
 					]
 				}
@@ -173,7 +180,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"title\": \"UPDATE EVENT FROM POSTMAN\",\r\n  \"startDate\": \"2024-09-19T16:30:46.156Z\",\r\n  \"endDate\": \"2024-09-20T20:30:46.156Z\",\r\n  \"maxRegistrations\": 10,\r\n  \"location\": \"Sofia\"\r\n}",
+					"raw": "{\r\n  \"id\": 0,\r\n  \"title\": \"UPDATE EVENT FROM POSTMAN\",\r\n  \"startDate\": \"2024-09-19 16:30\",\r\n  \"endDate\": \"2024-09-20 20:30\",\r\n  \"maxRegistrations\": 10,\r\n  \"location\": \"Sofia\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -200,14 +207,14 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5201/event27",
+					"raw": "http://localhost:5201/event34",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5201",
 					"path": [
-						"event27"
+						"event34"
 					]
 				}
 			},
@@ -219,14 +226,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5201/user5",
+					"raw": "http://localhost:5201/user11",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5201",
 					"path": [
-						"user5"
+						"user11"
 					]
 				}
 			},
