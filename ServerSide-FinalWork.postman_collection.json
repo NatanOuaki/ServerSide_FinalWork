@@ -117,7 +117,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5201/event/24/registration/22",
+					"raw": "http://localhost:5201/event/15/registration/22",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -125,7 +125,7 @@
 					"port": "5201",
 					"path": [
 						"event",
-						"24",
+						"15",
 						"registration",
 						"22"
 					]
@@ -188,14 +188,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5201/event24",
+					"raw": "http://localhost:5201/event15",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5201",
 					"path": [
-						"event24"
+						"event15"
 					]
 				}
 			},
@@ -207,14 +207,14 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5201/event34",
+					"raw": "http://localhost:5201/event21",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5201",
 					"path": [
-						"event34"
+						"event21"
 					]
 				}
 			},
