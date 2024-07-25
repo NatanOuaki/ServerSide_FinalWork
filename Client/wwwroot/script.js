@@ -1,6 +1,4 @@
 ﻿showAllEvents();
-
-
 async function getParticipants(id) {
     let url = `http://localhost:5201/event/${id}/participants`;
     try {
@@ -84,7 +82,6 @@ async function showAllEvents() {
     }
 }
 
-
 function addEvent() {
     document.getElementById('addEventModal').style.display = 'block';
 }
@@ -137,7 +134,6 @@ function postNewEvent() {
     }
 }
 
-
 let currentEventId;
 
 function openModal(id) {
@@ -155,21 +151,7 @@ function openModal(id) {
             }
             return response.json();
         })
-        .then((eventData) => {
-            let userPromises = eventData.map((eventItem) => {
-                let userUrl = `http://localhost:5201/user${eventItem.userRef}`;
-                return fetch(userUrl)
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error(`Error fetching user data: ${response.statusText}`);
-                        }
-                        return response.json();
-                    });
-            });
-
-            return Promise.all(userPromises);
-        })
-        .then((usersData) => {
+        .then((eventUsersData) => {
             let tableHTML = "<table id='eventUsers'>" +
                 "<tr>" +
                 "<th>#id</th>" +
@@ -178,7 +160,7 @@ function openModal(id) {
                 "<th>Remove From Event</th>"
             "</tr>";
 
-            usersData.forEach((user) => {
+            eventUsersData.forEach((user) => {
                 const dateOfBirth = new Date(user.dateOfBirth);
                 const formattedDateOfBirth = dateOfBirth.toLocaleString('en-GB', {
                     year: 'numeric', month: '2-digit', day: '2-digit',
@@ -273,7 +255,6 @@ function openWeatherModal(id) {
             return response.json();
         })
         .then((weatherData) => {
-            console.log(weatherData);
             weatherModalTitle.innerText = "Weather in " + weatherData.location.name;
             let html = `<div class="weather" id="weatherInTheModal">
                             <img class= "weatherIcon" src= ${weatherData.current.condition.icon} alt = "${weatherData.current.condition.text} icon" />
@@ -290,12 +271,40 @@ function openWeatherModal(id) {
                         </div>
                         `;
             modalWeatherContent.innerHTML = html;
+            getClothingDetails(id);
         })
         .catch((error) => {
             console.error(error);
         });
     weatherModal.style.display = "block";
 }
+
+
+function getClothingDetails(id) {
+    const clothingDetails = document.getElementById("clothingDetails");
+    let eventUrl = `http://localhost:5201/event/${id}/clothing`;
+
+    fetch(eventUrl)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`Error fetching event data: ${response.statusText}`);
+            }
+            return response.text(); 
+        })
+        .then((rawText) => {
+            const startIndex = rawText.indexOf("Wear");
+            if (startIndex === -1) {
+                throw new Error("The word 'Wear' was not found in the response text.");
+            }
+            const clothingText = rawText.substring(startIndex); // Extract the substring starting from 'Wear'
+            clothingDetails.innerHTML = `<p>${clothingText}</p>`;
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+}
+
+
 
 
 function closeWeatherModal() {
