@@ -327,37 +327,37 @@ namespace Server.Controllers
            if (lowerText.Contains("clear") || lowerText.Contains("sunny"))
            {
                outfit += ", and wear sunglasses and a hat";
-               link = "https://www.sunglasses.co.il/";
+               link += " - https://www.sunglasses.co.il/";
            }
            else if (lowerText.Contains("cloudy") || lowerText.Contains("overcast"))
            {
                outfit += ", and you might want to carry a light jacket";
-               link = "https://www.terminalx.com/";
+               link += " - https://www.terminalx.com/";
            }
            else if (lowerText.Contains("rain") || lowerText.Contains("drizzle"))
            {
                outfit += ", and don't forget an umbrella or a raincoat";
-               link = "https://www.amazon.com/umbrella/s?k=umbrella";
+               link += " - https://www.amazon.com/umbrella/s?k=umbrella";
            }
            else if (lowerText.Contains("snow") || lowerText.Contains("sleet") || lowerText.Contains("ice") || lowerText.Contains("blizzard"))
            {
                outfit += ", and wear snow boots and a warm hat";
-               link = "https://www.rei.com/c/snow-jackets";
+               link += " - https://www.rei.com/c/snow-jackets";
            }
            else if (lowerText.Contains("thunder"))
            {
                outfit += ", and ensure you have waterproof gear and stay safe indoors";
-               link = https://www.rains.com/";
+               link += " - https://www.rains.com/";
            }
            else if (lowerText.Contains("fog") || lowerText.Contains("mist"))
            {
                outfit += ", and wear something reflective if you're going outside";
-               link = "https://reelight.com/collections/reflective-wear";
+               link += " - https://reelight.com/collections/reflective-wear";
            }
            else if (lowerText.Contains("hail") || lowerText.Contains("ice pellets"))
            {
                outfit += ", and wear a sturdy hat and boots";
-               link = "https://www.icewear.is/";
+               link += " - https://www.icewear.is/";
            }
 
            return $"It's {text}, the temperature is {temp}°C. Wear {outfit}. Here is a link to buy some: {link}";
